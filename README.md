@@ -80,11 +80,18 @@ cd classroom-detection-api
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Download model weights
-# Download best.pt from: [ADD YOUR GOOGLE DRIVE LINK]
-# Place in: models/best.pt
+# 3. Create .env file (required for local development)
+cat > .env << EOF
+MODEL_PATH=models/best.pt
+CONFIDENCE_THRESHOLD=0.35
+HOST=0.0.0.0
+PORT=7860
+EOF
 
-# 4. Start API server
+# 4. Download model weights (if not in repo)
+# Model should be at: models/best.pt (64MB)
+
+# 5. Start API server
 python app.py
 ```
 
