@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY models/ ./models/
 COPY app.py .
-COPY .env .
+# Note: .env not needed - environment variables set by cloud platform
 
 # Create non-root user for security
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
