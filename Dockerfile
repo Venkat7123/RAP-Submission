@@ -31,11 +31,11 @@ RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
 # Expose port (can be overridden by PORT env var)
-EXPOSE 7860
+EXPOSE 10000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:7860/health', timeout=5)" || exit 1
+# Health check (disabled for Render compatibility)
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+#     CMD python -c "import requests; requests.get('http://localhost:10000/health', timeout=5)" || exit 1
 
-# Run application with PORT environment variable support (for Render/Railway)
-CMD uvicorn app:app --host 0.0.0.0 --port ${PORT:-7860}
+# Run application - PORT env var set by cloud platform (Render/Railway)
+CMD uvicorn app:app --host 0.0.0.0 --port ${PORT:-10000}
