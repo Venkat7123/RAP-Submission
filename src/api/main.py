@@ -35,9 +35,11 @@ detector = None
 reasoner = None
 
 def get_detector():
-    """Lazy load detector"""
+    """Lazy load detector with memory optimization"""
     global detector
     if detector is None:
+        import gc
+        gc.collect()  # Clear memory before loading
         model_path = os.getenv("MODEL_PATH", "models/best.pt")
         conf_threshold = float(os.getenv("CONFIDENCE_THRESHOLD", "0.5"))
         detector = ObjectDetector(model_path, conf_threshold)

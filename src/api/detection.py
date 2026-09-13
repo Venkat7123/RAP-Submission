@@ -43,7 +43,11 @@ class ObjectDetector:
             )
 
 
+        # Load model with CPU to reduce memory usage
+        import os
+        os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
         self.model = RTDETR(model_path)
+        self.model.to('cpu')  # Force CPU mode to save memory
         self.conf_threshold = conf_threshold
         self.class_names = self.model.names
 
