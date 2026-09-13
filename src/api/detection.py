@@ -22,24 +22,27 @@ class ObjectDetector:
             conf_threshold: Confidence threshold for detections
         """
 
-        if not Path(model_path).exists():
-            best_dir = Path("best")
-            if best_dir.exists() and best_dir.is_dir():
-                print("📦 Auto-repacking 'best/' folder into models/best.pt...")
-                import zipfile, os
+        # Download model if missing or corrupt
+        if not Path(model_path).exists() or Path(model_path).stat().st_size < 1000000:
+            print(f"⚠️ Model missing or corrupt at {model_path}, attempting download...")
+            try:
+                from download_model import download_model
+                download_model()
+            except ImportError:
+                # If download_model.py not available, try direct download
+                import requests
+                model_url = "https://media.githubusercontent.com/media/Venkat7123/RAP-Submission/main/models/best.pt"
+                print(f"📥 Downloading model from GitHub LFS...")
+                response = requests.get(model_url, timeout=300)
                 Path(model_path).parent.mkdir(parents=True, exist_ok=True)
-                with zipfile.ZipFile(model_path, 'w', zipfile.ZIP_STORED) as zipf:
-                    for root, dirs, files in os.walk('best'):
-                        for file in files:
-                            file_path = os.path.join(root, file)
-                            arcname = 'archive/' + os.path.relpath(file_path, 'best')
-                            zipf.write(file_path, arcname.replace('\\', '/'))
-                print("✅ Model repacked successfully!")
+                with open(model_path, 'wb') as f:
+                    f.write(response.content)
+                print(f"✅ Model downloaded: {Path(model_path).stat().st_size / 1024 / 1024:.1f} MB")
 
         if not Path(model_path).exists():
             raise FileNotFoundError(
                 f"Model not found: {model_path}\n"
-                f"Please train the model first: python src/training/train.py"
+                f"Please train the model first or check network connection."
             )
 
 
