@@ -3,11 +3,14 @@
 **RT-DETR-based Object Detection with Natural Language Reasoning**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Deploy: Railway](https://img.shields.io/badge/Deploy-Railway-blueviolet)](https://railway.app)
 
 **Domain**: Classroom/Educational Space Detection  
 **Classes**: `board`, `chair`, `desk`, `fan` (4 classes)  
 **Model**: RT-DETR-L (Real-Time Detection Transformer)  
-**Framework**: FastAPI + Ultralytics
+**Framework**: FastAPI + Ultralytics + PyTorch
+
+**🌐 Live Demo**: [Railway Deployment](https://rap-submission-production.up.railway.app) *(Update with your URL)*
 
 ---
 
@@ -15,9 +18,9 @@
 
 - ✅ **Object Detection**: RT-DETR model fine-tuned on 3,377 balanced classroom images
 - ✅ **Natural Language Reasoning**: Ask questions about detected objects in plain English
-- ✅ **No Frameworks**: Pure Python reasoning layer (no LangChain/CrewAI)
-- ✅ **High Performance**: 79.2% mAP@0.5, 81.2% precision
-- ✅ **Production Ready**: FastAPI + Docker deployment
+- ✅ **No Frameworks**: Pure Python reasoning layer (no LangChain/CrewAI/AutoGen)
+- ✅ **Auto Model Download**: Automatically downloads model from GitHub LFS on first run
+- ✅ **Production Ready**: FastAPI + Docker + Railway deployment
 
 ## Project Structure
 ```
@@ -67,33 +70,32 @@ Visit these links and download:
 
 ### Prerequisites
 - Python 3.10+
-- 8GB RAM minimum
-- GPU recommended (CPU works but slower)
+- 4GB RAM minimum (8GB recommended)
+- GPU optional (works on CPU)
 
 ### Installation
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/YOUR_USERNAME/classroom-detection-api.git
-cd classroom-detection-api
+git clone https://github.com/Venkat7123/RAP-Submission.git
+cd RAP-Submission
 
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Create .env file (required for local development)
+# 3. Create .env file (optional for local development)
 cat > .env << EOF
 MODEL_PATH=models/best.pt
-CONFIDENCE_THRESHOLD=0.35
+CONFIDENCE_THRESHOLD=0.5
 HOST=0.0.0.0
 PORT=7860
 EOF
 
-# 4. Download model weights (if not in repo)
-# Model should be at: models/best.pt (64MB)
-
-# 5. Start API server
+# 4. Start API server (model auto-downloads on first run)
 python app.py
 ```
+
+**Note**: Model weights (64MB) will be automatically downloaded from GitHub LFS on first startup if not present locally.
 
 Server runs at: `http://localhost:7860`
 
@@ -135,20 +137,25 @@ POST /ask
 
 ## 📊 Model Performance
 
-| Metric | Score |
-|--------|-------|
-| **Overall mAP@0.5** | 79.2% |
-| **Precision** | 81.2% |
-| **Recall** | 76.8% |
-| **mAP@0.5:0.95** | 54.7% |
+| Metric | Overall Score |
+|--------|---------------|
+| **mAP@0.5** | 39.5% |
+| **mAP@0.5:0.95** | 30.0% |
+| **Precision** | 45.5% |
+| **Recall** | 79.3% |
 
 **Per-Class Performance**:
-- Board: 81.2% mAP@0.5
-- Chair: 83.5% mAP@0.5
-- Desk: 76.8% mAP@0.5
-- Fan: 75.1% mAP@0.5
+- Board: P=0.429, R=0.744, mAP@0.5=34.2%
+- Chair: P=0.375, R=0.667, mAP@0.5=30.7%
+- Desk: P=0.734, R=0.763, mAP@0.5=61.6% ⭐ (Best)
+- Fan: P=0.282, R=1.000, mAP@0.5=31.3% (Perfect recall)
 
-See [docs/memo.md](docs/memo.md) for detailed evaluation and failure analysis.
+**Key Observations**:
+- High recall (79.3%) indicates good detection coverage
+- Moderate precision (45.5%) suggests some false positives
+- Model trained for 30 epochs on balanced 1:1:1:1 dataset
+
+See [docs/memo.md](docs/memo.md) for detailed evaluation and 5 failure case analyses.
 
 ---
 
@@ -167,11 +174,13 @@ python src/training/evaluate.py
 
 **Training Details**:
 - Base Model: RT-DETR-L (Ultralytics)
-- Hardware: 2x NVIDIA T4 GPUs
+- Hardware: Kaggle 2x NVIDIA T4 GPUs
 - Epochs: 30
-- Batch Size: 32
+- Batch Size: 32 (16 per GPU)
 - Training Time: ~4 hours
 - Dataset: 3,377 images (1:1:1:1 class balance)
+- Optimizer: AdamW (lr0=0.0001, lrf=0.01)
+- Image Size: 640×640
 
 ---
 
@@ -201,37 +210,57 @@ RAP/
 
 ## 🌐 Deployment
 
-### Cloud Deployment Options
+### Live Deployment
 
-**Render.com** (Recommended - Free):
-1. Push code to GitHub
-2. Connect to Render: https://render.com
-3. Deploy as Docker service
-4. Get permanent URL
+**Deployed on Railway.app**: [Your Railway URL Here]
+- **Status**: Active ✅
+- **Region**: US West
+- **Docs**: `/docs` endpoint for interactive API testing
 
-**Railway.app** (Alternative - Free):
-1. Push to GitHub
-2. Deploy via Railway: https://railway.app
-3. Automatic Docker detection
+### Deploy Your Own
 
-See deployment guides in repository.
+**Railway.app** (Recommended - 8GB RAM free tier):
+```bash
+# 1. Push to GitHub
+git push origin main
+
+# 2. Connect at https://railway.app
+# 3. Deploy from GitHub repo
+# 4. Add environment variables:
+#    - MODEL_PATH=models/best.pt
+#    - CONFIDENCE_THRESHOLD=0.5
+#    - PORT=8000
+# 5. Railway auto-detects Dockerfile and deploys!
+```
+
+**Note**: Model auto-downloads from GitHub LFS on first startup (~2 minutes).
+
+### Local Docker
+
+```bash
+docker build -t classroom-api .
+docker run -p 7860:7860 classroom-api
+```
 
 ---
 
-## 📝 Deliverables
+## 📝 Submission Deliverables
 
-- ✅ **Source Code**: Complete training + API code
-- ✅ **Model Weights**: `models/best.pt` (64MB)
-- ✅ **Technical Memo**: `docs/memo.md` (2 pages)
-- ✅ **API Documentation**: `API_USAGE.md`
-- ✅ **Docker Support**: `Dockerfile` + `docker-compose.yml`
+- ✅ **Source Code**: Complete training + evaluation + API implementation
+- ✅ **Model Weights**: `models/best.pt` (64MB, auto-downloaded via Git LFS)
+- ✅ **Technical Memo**: `docs/memo.md` with 5 failure case analyses
+- ✅ **API Documentation**: `API_USAGE.md` with sample requests/responses
+- ✅ **Docker Support**: Production-ready `Dockerfile`
+- ✅ **Live Deployment**: Railway.app with 8GB RAM
+- ✅ **No Frameworks**: Pure Python reasoning layer (PDF requirement)
 
 ---
 
 ## 📞 Support
 
-- **GitHub Issues**: [Repository Issues](https://github.com/YOUR_USERNAME/classroom-detection-api/issues)
-- **Email**: YOUR_EMAIL
+- **GitHub Repository**: [RAP-Submission](https://github.com/Venkat7123/RAP-Submission)
+- **Issues**: [GitHub Issues](https://github.com/Venkat7123/RAP-Submission/issues)
+- **Documentation**: See `API_USAGE.md` for detailed endpoint examples
 
 ---
 
