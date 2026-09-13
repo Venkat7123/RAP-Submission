@@ -2,7 +2,9 @@
 FastAPI Application - Classroom Object Detection with Reasoning
 Part A: Detection endpoint
 Part B: Reasoning endpoint (no frameworks - hand-written logic)
+Updated to load latest best.pt model
 """
+
 
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse

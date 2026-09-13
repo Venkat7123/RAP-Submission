@@ -46,35 +46,8 @@ The dataset was curated and sampled across classroom domain subsets to enforce a
 
 ---
 
-## 4. Quantitative Evaluation & Performance Metrics
 
-Evaluation on the held-out test set yielded the following metrics:
-
-| Metric | Overall Score |
-|--------|---------------|
-| **mAP@0.5** | **0.395** |
-| **mAP@0.5:0.95** | **0.300** |
-| **Precision** | **0.455** |
-| **Recall** | **0.793** |
-
-**Per-Class Performance:**
-
-| Class | Precision | Recall | mAP@0.5 |
-|-------|-----------|--------|---------|
-| **board** | 0.429 | 0.744 | 0.342 |
-| **chair** | 0.375 | 0.667 | 0.307 |
-| **desk** | 0.734 | 0.763 | 0.616 |
-| **fan** | 0.282 | 1.000 | 0.313 |
-
-**Key Observations:**
-* High recall (79.3%) indicates the model successfully detects most objects but with moderate precision (45.5%).
-* Desk class shows the strongest performance (73.4% precision, 61.6% mAP@0.5).
-* Fan class achieves perfect recall (100%) but lower precision (28.2%), suggesting false positive detections.
-* Class imbalance and small object detection remain challenging factors.
-
----
-
-## 5. Root-Cause Failure Case Analysis (5 Key Failures)
+## 4. Root-Cause Failure Case Analysis (5 Key Failures)
 
 1. **Local Class ID Remapping Collision**:
    * *Observation*: Initial single-class training runs predicted `board` for all test uploads (chairs, fans, desks).

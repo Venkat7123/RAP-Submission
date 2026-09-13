@@ -23,10 +23,25 @@ class ObjectDetector:
         """
 
         if not Path(model_path).exists():
+            best_dir = Path("best")
+            if best_dir.exists() and best_dir.is_dir():
+                print("📦 Auto-repacking 'best/' folder into models/best.pt...")
+                import zipfile, os
+                Path(model_path).parent.mkdir(parents=True, exist_ok=True)
+                with zipfile.ZipFile(model_path, 'w', zipfile.ZIP_STORED) as zipf:
+                    for root, dirs, files in os.walk('best'):
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            arcname = 'archive/' + os.path.relpath(file_path, 'best')
+                            zipf.write(file_path, arcname.replace('\\', '/'))
+                print("✅ Model repacked successfully!")
+
+        if not Path(model_path).exists():
             raise FileNotFoundError(
                 f"Model not found: {model_path}\n"
                 f"Please train the model first: python src/training/train.py"
             )
+
 
         self.model = RTDETR(model_path)
         self.conf_threshold = conf_threshold

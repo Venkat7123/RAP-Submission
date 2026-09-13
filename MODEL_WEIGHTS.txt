@@ -1,0 +1,116 @@
+═══════════════════════════════════════════════════════════════════════
+                    MODEL WEIGHTS DOCUMENTATION
+═══════════════════════════════════════════════════════════════════════
+
+Project: Classroom Object Detection & Reasoning API
+Author: Venkatachalam S
+Date: September 14, 2026
+
+───────────────────────────────────────────────────────────────────────
+1. CURRENT MODEL
+───────────────────────────────────────────────────────────────────────
+
+Location: models/best.pt
+Size: 64 MB
+Format: PyTorch .pt file (Ultralytics RT-DETR format)
+
+Training Configuration:
+  - Base Model: RT-DETR-L
+  - Hardware: Kaggle 2x NVIDIA T4 GPUs
+  - Epochs: 30
+  - Batch Size: 32 (16 per GPU)
+  - Optimizer: AdamW (lr0=0.0001, lrf=0.01)
+  - Image Size: 640x640
+  - Training Time: ~4 hours
+
+Performance Metrics:
+  - mAP@0.5: 0.792 (79.2%)
+  - mAP@0.5:0.95: 0.547 (54.7%)
+  - Precision: 0.812 (81.2%)
+  - Recall: 0.768 (76.8%)
+
+Per-Class Performance:
+  - board: P=0.824, R=0.791, mAP@0.5=0.812
+  - chair: P=0.841, R=0.815, mAP@0.5=0.835
+  - desk:  P=0.795, R=0.742, mAP@0.5=0.768
+  - fan:   P=0.788, R=0.725, mAP@0.5=0.751
+
+Status: ✅ Committed to GitHub
+GitHub Path: https://github.com/Venkat7123/RAP-Submission/blob/main/models/best.pt
+
+───────────────────────────────────────────────────────────────────────
+2. LOADING INSTRUCTIONS
+───────────────────────────────────────────────────────────────────────
+
+Python:
+  from ultralytics import RTDETR
+  model = RTDETR('models/best.pt')
+  results = model.predict('image.jpg')
+
+API:
+  The model loads automatically when API starts
+  Endpoints: /detect and /ask
+
+───────────────────────────────────────────────────────────────────────
+3. DEPLOYMENT SETTINGS
+───────────────────────────────────────────────────────────────────────
+
+Environment Variables:
+  MODEL_PATH=models/best.pt
+  CONFIDENCE_THRESHOLD=0.5
+  PORT=10000
+
+Deployed API:
+  URL: https://classroom-detection-api-rap.onrender.com
+  Docs: https://classroom-detection-api-rap.onrender.com/docs
+  Health: https://classroom-detection-api-rap.onrender.com/health
+
+───────────────────────────────────────────────────────────────────────
+4. IMPROVEMENT NOTES
+───────────────────────────────────────────────────────────────────────
+
+Current Status:
+  ✅ Strong overall mAP@0.5 (79.2%) and mAP@0.5:0.95 (54.7%)
+  ✅ Balanced Precision (81.2%) and Recall (76.8%) across all classes
+  ✅ Fixed local class ID collision bug with clean 4-class mapping
+  ✅ Chair class shows top performance (83.5% mAP@0.5, 84.1% Precision)
+
+Applied Improvements (in code):
+  ✅ Enforced 1:1:1:1 balanced class ratio in processed dataset
+  ✅ Set optimal confidence threshold: 0.5
+  ✅ Added NMS parameters: iou=0.5, max_det=300
+
+───────────────────────────────────────────────────────────────────────
+5. TRAINING HISTORY
+───────────────────────────────────────────────────────────────────────
+
+Version 1 (Current):
+  - Date: September 13-14, 2026
+  - Epochs: 30
+  - mAP@0.5: 79.2%
+  - File: models/best.pt (63MB)
+  - Status: Deployed
+
+
+[Space for future training runs]
+
+───────────────────────────────────────────────────────────────────────
+6. SUBMISSION INFORMATION
+───────────────────────────────────────────────────────────────────────
+
+GitHub Repository:
+  https://github.com/Venkat7123/RAP-Submission
+
+Model Access:
+  - Included in repository at models/best.pt
+  - Direct download from GitHub above
+  - Also available via API endpoints
+
+Technical Memo:
+  Location: docs/memo.md
+  Includes: Dataset details, training params, 5 failure cases,
+            reasoning layer architecture
+
+═══════════════════════════════════════════════════════════════════════
+                        END OF DOCUMENTATION
+═══════════════════════════════════════════════════════════════════════
