@@ -10,7 +10,7 @@
 **Model**: RT-DETR-L (Real-Time Detection Transformer)  
 **Framework**: FastAPI + Ultralytics + PyTorch
 
-**🌐 Live Demo**: [Railway Deployment](https://rap-submission-production.up.railway.app) *(Update with your URL)*
+**🌐 Live Demo**: [Railway Deployment](https://rap-submission-production.up.railway.app/docs)
 
 ---
 
