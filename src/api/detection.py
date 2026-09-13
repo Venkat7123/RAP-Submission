@@ -55,10 +55,12 @@ class ObjectDetector:
         if conf_threshold is None:
             conf_threshold = self.conf_threshold
 
-        # Run inference
+        # Run inference with optimized NMS parameters
         results = self.model.predict(
             image,
             conf=conf_threshold,
+            iou=0.5,        # IoU threshold for NMS (reduce overlaps)
+            max_det=300,    # Max detections per image
             verbose=False
         )
 
