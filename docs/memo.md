@@ -96,4 +96,8 @@ Per the strict technical requirements, **no agentic frameworks** (LangChain, Lla
 ## 7. Deployment & Reproducibility
 * **API Endpoints**: Served using FastAPI and Uvicorn (`http://127.0.0.1:8000/docs`).
 * **Containerization**: Full Docker support provided via `Dockerfile` and `docker-compose.yml`.
-* **Weights & Artifacts**: Weights saved at `models/best.pt` (63.2 MB).
+* **Model Weights & Artifacts**: 
+  * Location: `models/best.pt` (64 MB)
+  * Access: Included in GitHub repository at `https://github.com/Venkat7123/RAP-Submission/blob/main/models/best.pt`
+  * Format: PyTorch `.pt` file (Ultralytics RT-DETR format)
+  * Loading: `model = RTDETR('models/best.pt')` or via API endpoints
