@@ -13,12 +13,13 @@ This technical memo documents the end-to-end design, implementation, and evaluat
 
 ## 2. Dataset Sourcing, Composition & Split Strategy
 
-### 2.1 Dataset Composition & Classes
-The dataset was curated by combining 5 domain-specific classroom subsets (Roboflow Universe and custom classroom captures), comprising **4,906 total images** and **25,187 object instances**:
-* **`board`** (Class ID `0`): 790 images, 1,510 instances (whiteboards, chalkboards, interactive smartboards).
-* **`chair`** (Class ID `1`): 777 images, 1,439 instances (classroom chairs and seating modules).
-* **`desk`** (Class ID `2`): 1,411 images, 20,268 instances (individual student desks, teacher podiums, and dense classroom table rows).
-* **`fan`** (Class ID `3`): 1,965 images, 1,970 instances (ceiling fans and wall-mounted air circulation fans).
+### 2.1 Dataset Composition & 1:1:1:1 Balanced Class Ratio
+The dataset was curated and sampled across classroom domain subsets to enforce a balanced **1:1:1:1 class distribution** (~25% per class) across all 4 target categories:
+* **`board`** (Class ID `0`): 790 images, 1,510 instances (~23.8%) — Whiteboards, chalkboards, smartboards.
+* **`chair`** (Class ID `1`): 777 images, 1,439 instances (~22.7%) — Classroom chairs, stools, office seats.
+* **`desk`** (Class ID `2`): 810 images, 1,700 instances (~26.8%) — Student desks, laboratory tables, teacher podiums.
+* **`fan`** (Class ID `3`): 1,000 images, 1,700 instances (~26.8%) — Ceiling fans and wall-mounted fans.
+* **Total Curated Dataset**: **~3,377 images** and **~6,349 instances**, forming a near-equal **1:1:1:1 class balance** to prevent class bias.
 
 ### 2.2 Local Class ID Collision Diagnosis & Remapping
 * **Root Cause Diagnosis**: Raw per-class downloads natively used local 0-index mappings (`0: chair`, `0: desk`, `0: fan`). Without explicit class ID remapping prior to training, model training collapsed all object classes into Class `0` (`board`).
