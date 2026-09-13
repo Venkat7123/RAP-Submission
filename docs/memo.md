@@ -46,19 +46,6 @@ The dataset was curated and sampled across classroom domain subsets to enforce a
 
 ---
 
-## 4. Quantitative Evaluation & Performance Metrics
-
-Evaluation on the 357 held-out test images yielded the following key metrics:
-
-| Class | Precision | Recall | mAP@0.5 | mAP@0.5:0.95 |
-|---|---|---|---|---|
-| **`board`** | 0.824 | 0.791 | 0.812 | 0.584 |
-| **`chair`** | 0.841 | 0.815 | 0.835 | 0.592 |
-| **`desk`** | 0.795 | 0.742 | 0.768 | 0.518 |
-| **`fan`** | 0.788 | 0.725 | 0.751 | 0.495 |
-| **ALL (Overall)** | **0.812** | **0.768** | **0.792** | **0.547** |
-
----
 
 ## 5. Root-Cause Failure Case Analysis (5 Key Failures)
 
@@ -96,8 +83,4 @@ Per the strict technical requirements, **no agentic frameworks** (LangChain, Lla
 ## 7. Deployment & Reproducibility
 * **API Endpoints**: Served using FastAPI and Uvicorn (`http://127.0.0.1:8000/docs`).
 * **Containerization**: Full Docker support provided via `Dockerfile` and `docker-compose.yml`.
-* **Model Weights & Artifacts**: 
-  * Location: `models/best.pt` (64 MB)
-  * Access: Included in GitHub repository at `https://github.com/Venkat7123/RAP-Submission/blob/main/models/best.pt`
-  * Format: PyTorch `.pt` file (Ultralytics RT-DETR format)
-  * Loading: `model = RTDETR('models/best.pt')` or via API endpoints
+* **Model Weights**: Saved at `models/best.pt` (64 MB).
