@@ -1,0 +1,42 @@
+# Dataset Configuration for Classroom Object Detection
+# Update this file after downloading your dataset
+
+dataset:
+  name: "classroom-detection"  # Update with your dataset name
+  source: "Roboflow/Kaggle/Custom"  # Update with actual source
+  source_url: "https://..."  # Direct link to dataset
+
+  classes:
+    - chair
+    - table
+    - fan        # Non-COCO class
+    - whiteboard # Non-COCO class
+    - ac         # Non-COCO class
+
+  num_classes: 5
+
+  splits:
+    train: 0.7    # 70% for training
+    val: 0.2      # 20% for validation
+    test: 0.1     # 10% for testing
+
+  paths:
+    raw: "data/raw"
+    train: "data/train"
+    val: "data/val"
+    test: "data/test"
+
+  statistics:
+    total_images: 0  # Update after download
+    train_images: 0
+    val_images: 0
+    test_images: 0
+
+  annotation_format: "yolo"  # or "coco", "pascal_voc"
+
+notes: |
+  Dataset sourcing justification:
+  - Why this domain was chosen
+  - How data was collected/sourced
+  - Labeling methodology (if custom labeled)
+  - Any preprocessing applied
