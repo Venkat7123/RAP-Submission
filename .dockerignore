@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+ENV/
+*.pyc
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Data and notebooks (not needed in container)
+data/
+notebooks/
+classroom.v1i.yolov8/
+classroom_4class_dataset.zip
+*.ipynb
+COLAB_4CLASS_NOTEBOOK.ipynb
+
+# Documentation
+docs/
+*.pdf
+*.md
+README.md
+API_USAGE.md
+
+# Training artifacts
+best/
+evaluation_results/
+
+# IDE
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.egg-info/
+dist/
+build/

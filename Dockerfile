@@ -1,9 +1,7 @@
-# Dockerfile for Classroom Object Detection API
-# Bonus points for Docker containerization
-
+# Classroom Object Detection API - Production Dockerfile
 FROM python:3.10-slim
 
-# Install system dependencies
+# Install system dependencies for OpenCV
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
@@ -16,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first (for caching)
+# Copy requirements first (for Docker layer caching)
 COPY requirements.txt .
 
 # Install Python dependencies
@@ -25,14 +23,19 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY src/ ./src/
 COPY models/ ./models/
-COPY .env.example .env
+COPY app.py .
+COPY .env .
 
-# Expose port
-EXPOSE 8000
+# Create non-root user for security
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+USER appuser
+
+# Expose port (can be overridden by PORT env var)
+EXPOSE 7860
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl --fail http://localhost:8000/health || exit 1
+    CMD python -c "import requests; requests.get('http://localhost:7860/health', timeout=5)" || exit 1
 
-# Run the application
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run application with PORT environment variable support (for Render/Railway)
+CMD uvicorn app:app --host 0.0.0.0 --port ${PORT:-7860}

@@ -25,13 +25,16 @@ wheels/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+# Notebooks excluded except training notebook (optional reference)
 *.ipynb
-!COLAB_4CLASS_NOTEBOOK.ipynb
+!notebooks/COLAB_4CLASS_NOTEBOOK.ipynb
 
-# Environment
-.env
+# Environment variables
+# IMPORTANT: .env is INCLUDED in submission (contains model config)
 .venv
+.env
 .env.local
+.env.backup
 
 # IDE
 .vscode/
@@ -39,16 +42,23 @@ wheels/
 *.swp
 *.swo
 *~
+COMMIT_NOW.txt
 
-# Data (don't commit large files)
+# Data (large files - not needed for submission)
+# Dataset should be documented in memo, not committed
 data/raw/*
 data/processed/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
+data/train/*
+data/val/*
+data/test/*
+!data/*/.gitkeep
 *.zip
 classroom.v1i.yolov8/
+classroom_4class_dataset.zip
 
-# Models (too large for git)
+# Models (large files - use Git LFS or external hosting)
+# IMPORTANT: models/best.pt MUST be included or hosted separately
+# If >100MB, use Git LFS: git lfs track "models/best.pt"
 models/*.pt
 models/*.pth
 models/*.onnx
@@ -69,3 +79,13 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+
+# Helper/guide files (not needed in submission)
+DEPLOY.md
+SUBMISSION_READY.md
+SUBMISSION_VERIFICATION.md
+READY_TO_SUBMIT.txt
+
+# Problem statement (don't commit assignment PDF)
+Problem_Statement*.pdf
+*Problem_Statement*.pdf

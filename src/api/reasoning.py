@@ -56,7 +56,7 @@ class ReasoningLayer:
         ]
 
         # Class names we can detect (will be updated from detector)
-        self.known_classes = ['board', 'chair', 'desk']
+        self.known_classes = ['board', 'chair', 'desk', 'fan']
 
     def process_question(
         self,

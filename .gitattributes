@@ -1,1 +1,10 @@
+# Git LFS configuration for large files
+# Use if models/best.pt is >100MB
+
+# Track model files with Git LFS
 models/best.pt filter=lfs diff=lfs merge=lfs -text
+*.pt filter=lfs diff=lfs merge=lfs -text
+*.pth filter=lfs diff=lfs merge=lfs -text
+*.onnx filter=lfs diff=lfs merge=lfs -text
+# Track large datasets if needed
+*.zip filter=lfs diff=lfs merge=lfs -text
