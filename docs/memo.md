@@ -14,17 +14,21 @@ This technical memo documents the end-to-end design, implementation, and evaluat
 ## 2. Dataset Sourcing, Composition & Split Strategy
 
 ### 2.1 Dataset Composition & Classes
-The dataset was curated by combining classroom domain subsets from Roboflow Universe and custom annotations, comprising **2,377 images**:
-* **`board`** (Non-COCO Class): Whiteboards, chalkboards, and interactive smartboards.
-* **`chair`**: Classroom chairs and seating modules.
-* **`desk`**: Student desks and teacher podiums.
-* **`fan`** (Non-COCO Class): Ceiling fans and wall-mounted air circulation fans.
+The dataset was curated by combining 5 domain-specific classroom subsets (Roboflow Universe and custom classroom captures), comprising **4,906 total images** and **25,187 object instances**:
+* **`board`** (Class ID `0`): 790 images, 1,510 instances (whiteboards, chalkboards, interactive smartboards).
+* **`chair`** (Class ID `1`): 777 images, 1,439 instances (classroom chairs and seating modules).
+* **`desk`** (Class ID `2`): 1,411 images, 20,268 instances (individual student desks, teacher podiums, and dense classroom table rows).
+* **`fan`** (Class ID `3`): 1,965 images, 1,970 instances (ceiling fans and wall-mounted air circulation fans).
 
-### 2.2 Split Strategy & Justification
-* **Train Split (70%)**: 1,663 images for gradient updates.
-* **Validation Split (15%)**: 357 images for hyperparameter tuning and early stopping.
-* **Test Split (15%)**: 357 held-out images for final metric evaluation.
-* **Justification**: A stratified 70/15/15 split maintains proportional class distribution across splits while retaining a sufficiently large test set to compute reliable mAP@0.5:0.95 metrics without data leakage.
+### 2.2 Local Class ID Collision Diagnosis & Remapping
+* **Root Cause Diagnosis**: Raw per-class downloads natively used local 0-index mappings (`0: chair`, `0: desk`, `0: fan`). Without explicit class ID remapping prior to training, model training collapsed all object classes into Class `0` (`board`).
+* **Resolution**: Implemented an automated pre-processing pipeline in `src/` to remap all raw bounding box annotations to the global 4-class schema (`0: board`, `1: chair`, `2: desk`, `3: fan`).
+
+### 2.3 Split Strategy & Justification
+* **Train Split (85%)**: 4,165 images (22,814 instances) for multi-GPU transformer fine-tuning.
+* **Validation Split (10%)**: 474 images (1,608 instances) for early stopping and hyperparameter tuning.
+* **Test Split (5%)**: 267 images (765 instances) held-out for evaluation metrics.
+* **Justification**: Proportional multi-class stratification maintains adequate validation/test instances across all 4 classes while maximizing training capacity.
 
 ---
 
@@ -57,21 +61,21 @@ Evaluation on the 357 held-out test images yielded the following key metrics:
 
 ## 5. Root-Cause Failure Case Analysis (5 Key Failures)
 
-1. **Flat Surface Ambiguity (Desk vs. Board)**:
+1. **Local Class ID Remapping Collision**:
+   * *Observation*: Initial single-class training runs predicted `board` for all test uploads (chairs, fans, desks).
+   * *Root Cause*: Unmapped local dataset downloads all defaulted to `class_id: 0`, forcing the model to associate all features with `board`.
+2. **Flat Surface Ambiguity (Desk vs. Board)**:
    * *Observation*: Large empty wooden desk surfaces in extreme close-ups were misclassified as `board`.
    * *Root Cause*: Geometric similarity (large rectangular flat plane) when contextual cues (legs/chairs) are cropped out.
-2. **Occlusion under Dense Rows**:
+3. **Occlusion under Dense Rows**:
    * *Observation*: Partially visible chairs tucked underneath desks in dense rows had lower recall.
    * *Root Cause*: Severe bounding box overlap (>70% occlusion) causing Non-Maximum Suppression (NMS) suppression.
-3. **Scale Variation for Ceiling Fans**:
+4. **Scale Variation for Ceiling Fans**:
    * *Observation*: Small, high-ceiling fans were occasionally undetected.
    * *Root Cause*: Resolution downsampling to 640x640 reduces 15x15 pixel ceiling fan regions to minimal feature grid cells.
-4. **Lighting & Glare Reflection**:
-   * *Observation*: Whiteboards with heavy sunlight reflections or bright projector glare showed lower detection confidence.
-   * *Root Cause*: High luminance washes out boundary contrast between board frames and walls.
-5. **Class Imbalance in Complex Scenes**:
-   * *Observation*: Rooms with 30+ chairs suffered minor under-counting (detected ~24 of 30).
-   * *Root Cause*: Detection transformers have a query cap (default 300 objects), but dense overlaps degrade confidence scores below threshold.
+5. **Desk Instance Density Imbalance**:
+   * *Observation*: Whole classroom photos contain up to 30–40 desk instances per image vs 1–2 fans or boards.
+   * *Root Cause*: Extreme bounding box instance density imbalance requiring class-weighted loss tuning during training.
 
 ---
 

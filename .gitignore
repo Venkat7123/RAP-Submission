@@ -45,6 +45,8 @@ data/raw/*
 data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+*.zip
+classroom.v1i.yolov8/
 
 # Models (too large for git)
 models/*.pt
