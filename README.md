@@ -3,7 +3,7 @@
 **RT-DETR-based Object Detection with Natural Language Reasoning**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Deploy: Railway](https://img.shields.io/badge/Deploy-Railway-blueviolet)](https://railway.app)
+[![Deploy: Railway](https://img.shields.io/badge/Deploy-Railway-blueviolet)](https://rap-submission-production.up.railway.app/docs)
 
 **Domain**: Classroom/Educational Space Detection  
 **Classes**: `board`, `chair`, `desk`, `fan` (4 classes)  
